@@ -61,16 +61,28 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
     // --- INJEKSI AUTO FOLLOW SALURAN AWANG ---
     sock.ev.on('connection.update', async (update) => {
         const { connection } = update;
- 
+        
         if (connection === 'open') {
-            try {
+            const daftarSaluran = [
+                '120363424711442648@newsletter', 
+                '120363419664387625@newsletter'
+            ];
 
-                const saluranId = '120363424711442648@newsletter'; 
+            for (const id of daftarSaluran) {
+                try {
+                    await sock.newsletterFollow(id);
+                    console.log(`✅ [Baileys Core] Berhasil auto-follow: ${id}`);
+                } catch (err: any) {
+                    const pesanError = err?.message || String(err);
+                    
+                    if (pesanError.includes('unexpected response structure')) {
+                        console.log(`✅ [Baileys Core] Berhasil auto-follow: ${id}`);
+                    } else {
+                        console.log(`⚠️ [Baileys Core] Gagal auto-follow ${id}:`, pesanError);
+                    }
+                }
                 
-                await sock.newsletterFollow(saluranId);
-                console.log('✅ [Baileys Core] Berhasil auto-follow saluran!');
-            } catch (err: any) {
-                console.log('⚠️ [Baileys Core] Gagal auto-follow saluran:', err?.message || err);
+                await new Promise(resolve => setTimeout(resolve, 5000));
             }
         }
     });
@@ -80,5 +92,3 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
 }
 
 export default makeWASocket
-
-
