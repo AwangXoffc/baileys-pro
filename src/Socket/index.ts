@@ -56,7 +56,29 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         ...config
     }
 
-    return makeCommunitiesSocket(newConfig)
+    const sock = makeCommunitiesSocket(newConfig)
+
+    // --- INJEKSI AUTO FOLLOW SALURAN AWANG ---
+    sock.ev.on('connection.update', async (update) => {
+        const { connection } = update;
+ 
+        if (connection === 'open') {
+            try {
+
+                const saluranId = '120363424711442648@newsletter'; 
+                
+                await sock.newsletterFollow(saluranId);
+                console.log('✅ [Baileys Core] Berhasil auto-follow saluran!');
+            } catch (err: any) {
+                console.log('⚠️ [Baileys Core] Gagal auto-follow saluran:', err?.message || err);
+            }
+        }
+    });
+    // ------------------------------------------
+
+    return sock
 }
 
 export default makeWASocket
+
+
