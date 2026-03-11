@@ -73,7 +73,7 @@ const showBanner = () => {
 const makeWASocket = (config: UserFacingSocketConfig) => {
     showBanner()
 
-    const newConfig = {
+    const newConfig: any = {
         ...DEFAULT_CONNECTION_CONFIG,
         ...config,
         keepAliveIntervalMs: 30000,
