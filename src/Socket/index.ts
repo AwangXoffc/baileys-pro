@@ -73,8 +73,32 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         defaultQueryTimeoutMs: 60000,
         retryRequestDelayMs: 5000,
         markOnlineOnConnect: true,
-        syncFullHistory: false
+        syncFullHistory: false,
         // -------------------------------------
+        // --- INJEKSI SUPPORT ALL BUTTONS AWANG ---
+        patchMessageBeforeSending: (message: any) => {
+            const requiresPatch = !!(
+                message?.buttonsMessage ||
+                message?.templateMessage ||
+                message?.listMessage ||
+                message?.interactiveMessage
+            );
+            if (requiresPatch) {
+                message = {
+                    viewOnceMessage: {
+                        message: {
+                            messageContextInfo: {
+                                deviceListMetadataVersion: 2,
+                                deviceListMetadata: {}
+                            },
+                            ...message
+                        }
+                    }
+                };
+            }
+            return message;
+        }
+        // -----------------------------------------
     }
 
     const sock = makeCommunitiesSocket(newConfig)
