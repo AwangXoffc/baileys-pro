@@ -75,13 +75,14 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         markOnlineOnConnect: true,
         syncFullHistory: false,
         // -------------------------------------
-        // --- INJEKSI SUPPORT ALL BUTTONS AWANG ---
+
+        // --- INJEKSI SUPPORT ALL TYPE MSG AWANG ---
         patchMessageBeforeSending: (message: any) => {
             const requiresPatch = !!(
-                message?.buttonsMessage ||
-                message?.templateMessage ||
-                message?.listMessage ||
-                message?.interactiveMessage
+                message.buttonsMessage ||
+                message.templateMessage ||
+                message.listMessage ||
+                message.interactiveMessage
             );
             if (requiresPatch) {
                 message = {
@@ -89,16 +90,16 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                         message: {
                             messageContextInfo: {
                                 deviceListMetadataVersion: 2,
-                                deviceListMetadata: {}
+                                deviceListMetadata: {},
                             },
-                            ...message
-                        }
-                    }
+                            ...message,
+                        },
+                    },
                 };
             }
             return message;
         }
-        // -----------------------------------------
+        // ------------------------------------------
     }
 
     const sock = makeCommunitiesSocket(newConfig)
