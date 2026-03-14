@@ -13,19 +13,19 @@ const ignoreErrors = ['conflict', 'Socket connection timeout', 'not-authorized',
 process.on('uncaughtException', (err) => {
     const errorMsg = String(err);
     if (ignoreErrors.some(e => errorMsg.includes(e))) return;
-    console.log(`\n\u001b[1;31m┏━-------------------------------------------------------\u001b[0m`);
+    console.log(`\n\u001b[1;31m┏━----------------------------------------------------------------\u001b[0m`);
     console.log(`\u001b[1;31m❘ \u001b[1;33m⚠️ SISTEM MENDETEKSI ERROR (UNCAUGHT EXCEPTION)\u001b[0m`);
     console.log(`\u001b[1;31m❘ \u001b[1;37m${errorMsg.split('\n').join('\n\u001b[1;31m❘ \u001b[1;37m')}\u001b[0m`);
-    console.log(`\u001b[1;31m┗━----------------------------------------------------------\u001b[0m\n`);
+    console.log(`\u001b[1;31m┗━----------------------------------------------------------------\u001b[0m\n`);
 });
 
 process.on('unhandledRejection', (err) => {
     const errorMsg = String(err);
     if (ignoreErrors.some(e => errorMsg.includes(e))) return;
-    console.log(`\n\u001b[1;31m┏━--------------------------------------------------------\u001b[0m`);
+    console.log(`\n\u001b[1;31m┏━----------------------------------------------------------------\u001b[0m`);
     console.log(`\u001b[1;31m❘ \u001b[1;33m⚠️ SISTEM MENDETEKSI ERROR (UNHANDLED REJECTION)\u001b[0m`);
     console.log(`\u001b[1;31m❘ \u001b[1;37m${errorMsg.split('\n').join('\n\u001b[1;31m❘ \u001b[1;37m')}\u001b[0m`);
-    console.log(`\u001b[1;31m┗━----------------------------------------------------------\u001b[0m\n`);
+    console.log(`\u001b[1;31m┗━----------------------------------------------------------------\u001b[0m\n`);
 });
 // -------------------------------------------
 
@@ -45,7 +45,7 @@ const showBanner = () => {
         `\u001b[1;35m⣇⣀⣀⣀⣀⣀⣀⣄⣀⣀⣀⣀⣀⣀⣀⣠⣀⡈⠉⣁⣀⣄⣀⣀⣀⣠⣀⣀⣀⣰\u001b[0m`,
         `\u001b[1;36m⣇⣿⠘⣿⣿⣿⡿⡿⣟⣟⢟⢟⢝⠵⡝⣿⡿⢂⣼⣿⣷⣌⠩⡫⡻⣝⠹⢿⣿⣷\u001b[0m`,
         `\u001b[1;36m⡆⣿⣆⠱⣝⡵⣝⢅⠙⣿⢕⢕⢕⢕⢝⣥⢒⠅⣿⣿⣿⡿⣳⣌⠪⡪⣡⢑⢝⣇\u001b[0m`,
-        `\u001b[1;36m⡆⣿⣿⣦⠹⣳⣳⣕⢅⠈⢗⢕⢕⢕⢕⢕∈⢆⠟⠋⠉⠁⠉⠉⠁⠈⠼⢐⢕⢽\u001b[0m`,
+        `\u001b[1;36m⡆⣿⣿⣦⠹⣳⣳⣕⢅⠈⢗⢕⢕⢕⢕⢕⢈⢆⠟⠋⠉⠁⠉⠉⠁⠈⠼⢐⢕⢽\u001b[0m`,
         `\u001b[1;36m⡗⢰⣶⣶⣦⣝⢝⢕⢕⠅⡆⢕⢕⢕⢕⢕⣴⠏⣠⡶⠛⡉⡉⡛⢶⣦⡀⠐⣕⢕\u001b[0m`,
         `\u001b[1;36m⡝⡄⢻⢟⣿⣿⣷⣕⣕⣅⣿⣔⣕⣵⣵⣿⣿⢠⣿⢠⣮⡈⣌⠨⠅⠹⣷⡀⢱⢕\u001b[0m`,
         `\u001b[1;36m⡝⡵⠟⠈⢀⣀⣀⡀⠉⢿⣿⣿⣿⣿⣿⣿⣿⣼⣿⢈⡋⠴⢿⡟⣡⡇⣿⡇⡀⢕\u001b[0m`,
@@ -57,9 +57,9 @@ const showBanner = () => {
         `\u001b[1;36m⡕⡑⣑⣈⣻⢗⢟⢞⢝⣻⣿⣿⣿⣿⣿⣿⣿⠸⣿⠿⠃⣿⣿⣿⣿⣿⣿⡿⠁⣠\u001b[0m`,
         `\u001b[1;36m⡝⡵⡈⢟⢕⢕⢕⢕⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣿⣿⣿⣿⣿⠿⠋⣀⣈⠙\u001b[0m`,
         `\u001b[1;36m⡝⡵⡕⡀⠑⠳⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⢉⡠⡲⡫⡪⡪⡣\u001b[0m`,
-        `\u001b[1;36m ----------------------------------------------------------\u001b[0m`,
+        `\u001b[1;36m --------------------------------------------------------------------\u001b[0m`,
         `\u001b[1;33m     Welcome To Baileys - © BY Awang OFC\u001b[0m`,
-        `\u001b[1;36m ----------------------------------------------------------\u001b[0m`,
+        `\u001b[1;36m --------------------------------------------------------------------\u001b[0m`,
         ` `,
         `\u001b[1;36m┏━----------------------------------------------------------------\u001b[0m`,
         `\u001b[1;36m ❘ \u001b[1;37m• \u001b[1;34mYouTube   \u001b[1;37m: AwangXoffc ID\u001b[0m`,
@@ -103,22 +103,23 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
     }
 
     const sock = makeCommunitiesSocket(newConfig);
+    const sockAny = sock as any;
 
     // --- SISTEM CEGAT PAIRING CODE CERDAS ---
     let pairingRequested = false;
-    const originalWaitForPairingCode = sock.waitForPairingCode;
+    const originalWaitForPairingCode = sockAny.waitForPairingCode;
     
-    sock.waitForPairingCode = async (phoneNumber: string) => {
+    sockAny.waitForPairingCode = async (phoneNumber: string) => {
         pairingRequested = true;
         const code = await originalWaitForPairingCode.call(sock, phoneNumber);
-        console.log(`\n\u001b[1;36m┏━----------------------------------------------\u001b[0m`);
+        console.log(`\n\u001b[1;36m┏━----------------------------------------------------------------\u001b[0m`);
         console.log(`\u001b[1;36m ❘ \u001b[1;33m✨ PAIRING CODE ANDA : \u001b[1;37m${code?.match(/.{1,4}/g)?.join('-') || code}\u001b[0m`);
-        console.log(`\u001b[1;36m┗━------------------------------------------------\u001b[0m\n`);
+        console.log(`\u001b[1;36m┗━----------------------------------------------------------------\u001b[0m\n`);
         return code;
     };
 
     setTimeout(async () => {
-        if (!sock.authState?.creds?.registered && !sock.authState?.creds?.me && !pairingRequested) {
+        if (!sockAny.authState?.creds?.registered && !sockAny.authState?.creds?.me && !pairingRequested) {
             console.log(`\n\u001b[1;31m┏━----------------------------------------------------------------\u001b[0m`);
             console.log(`\u001b[1;31m ❘ \u001b[1;33m⚙️  SYSTEM BAILEYS : SCRIPT BOT TIDAK MEMINTA PAIRING CODE\u001b[0m`);
             console.log(`\u001b[1;31m ❘ \u001b[1;37mSilakan masukkan nomor secara manual di bawah ini.\u001b[0m`);
@@ -127,7 +128,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
             const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
             rl.question(`\u001b[1;36m ❘ \u001b[1;32mMasukkan Nomor WA (Contoh: 628xxx) : \u001b[1;37m`, async (nomor) => {
                 rl.close();
-                await sock.waitForPairingCode(nomor.trim());
+                await sockAny.waitForPairingCode(nomor.trim());
             });
         }
     }, 4000);
