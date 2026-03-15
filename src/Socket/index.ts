@@ -2,10 +2,43 @@ import { DEFAULT_CONNECTION_CONFIG } from '../Defaults'
 import type { UserFacingSocketConfig } from '../Types'
 import { makeCommunitiesSocket } from './communities'
 import * as readline from 'readline'
+import * as util from 'util'
 
 // --- MANTRA FORCE COLOR PANEL ---
 process.env.FORCE_COLOR = '1';
 // --------------------------------
+
+// --- BLACKHOLE SILENCER (MENELAN LOG INTERNAL KOTOR) ---
+const originalLog = console.log;
+const originalInfo = console.info;
+const originalDebug = console.debug;
+const originalWarn = console.warn;
+
+const filterLog = (args: any[], originalFn: any) => {
+    const logStr = util.format(...args);
+    if (
+        logStr.includes('SessionEntry') || 
+        logStr.includes('Closing session') || 
+        logStr.includes('_chains') || 
+        logStr.includes('ephemeralKeyPair') || 
+        logStr.includes('registrationId') || 
+        logStr.includes('unexpected response structure')
+    ) return;
+    originalFn.apply(console, args);
+};
+
+console.log = (...args) => filterLog(args, originalLog);
+console.info = (...args) => filterLog(args, originalInfo);
+console.debug = (...args) => filterLog(args, originalDebug);
+console.warn = (...args) => filterLog(args, originalWarn);
+
+const silentLogger: any = {
+    level: 'silent',
+    log: () => {}, info: () => {}, warn: () => {}, 
+    error: () => {}, trace: () => {}, debug: () => {}, 
+    fatal: () => {}, child: function() { return this; }
+};
+// -------------------------------------------------------
 
 // --- SISTEM DETEKSI ERROR CERDAS & MEWAH ---
 const ignoreErrors = ['conflict', 'Socket connection timeout', 'not-authorized', 'rate-overlimit', 'Connection Closed', 'Timed Out', 'Value not found', 'ENOENT', 'ECONNREFUSED'];
@@ -13,19 +46,19 @@ const ignoreErrors = ['conflict', 'Socket connection timeout', 'not-authorized',
 process.on('uncaughtException', (err) => {
     const errorMsg = String(err);
     if (ignoreErrors.some(e => errorMsg.includes(e))) return;
-    console.log(`\n\u001b[1;31m┏━--------------------------------\u001b[0m`);
-    console.log(`\u001b[1;31m❘ \u001b[1;33m⚠️ SISTEM MENDETEKSI ERROR (UNCAUGHT EXCEPTION)\u001b[0m`);
-    console.log(`\u001b[1;31m❘ \u001b[1;37m${errorMsg.split('\n').join('\n\u001b[1;31m❘ \u001b[1;37m')}\u001b[0m`);
-    console.log(`\u001b[1;31m┗━----------------------------------\u001b[0m\n`);
+    originalLog(`\n\u001b[1;31m┏━--------------------------------------\u001b[0m`);
+    originalLog(`\u001b[1;31m❘ \u001b[1;33m⚠️ SISTEM MENDETEKSI ERROR (UNCAUGHT EXCEPTION)\u001b[0m`);
+    originalLog(`\u001b[1;31m❘ \u001b[1;37m${errorMsg.split('\n').join('\n\u001b[1;31m❘ \u001b[1;37m')}\u001b[0m`);
+    originalLog(`\u001b[1;31m┗━-----------------------------------------\u001b[0m\n`);
 });
 
 process.on('unhandledRejection', (err) => {
     const errorMsg = String(err);
     if (ignoreErrors.some(e => errorMsg.includes(e))) return;
-    console.log(`\n\u001b[1;31m┏━--------------------------------\u001b[0m`);
-    console.log(`\u001b[1;31m❘ \u001b[1;33m⚠️ SISTEM MENDETEKSI ERROR (UNHANDLED REJECTION)\u001b[0m`);
-    console.log(`\u001b[1;31m❘ \u001b[1;37m${errorMsg.split('\n').join('\n\u001b[1;31m❘ \u001b[1;37m')}\u001b[0m`);
-    console.log(`\u001b[1;31m┗━----------------------------------\u001b[0m\n`);
+    originalLog(`\n\u001b[1;31m┏━---------------------------------------\u001b[0m`);
+    originalLog(`\u001b[1;31m❘ \u001b[1;33m⚠️ SISTEM MENDETEKSI ERROR (UNHANDLED REJECTION)\u001b[0m`);
+    originalLog(`\u001b[1;31m❘ \u001b[1;37m${errorMsg.split('\n').join('\n\u001b[1;31m❘ \u001b[1;37m')}\u001b[0m`);
+    originalLog(`\u001b[1;31m┗━------------------------------------------\u001b[0m\n`);
 });
 // -------------------------------------------
 
@@ -33,19 +66,6 @@ process.on('unhandledRejection', (err) => {
 const proMemoryCache = new Map();
 setInterval(() => { proMemoryCache.clear(); }, 5 * 60 * 1000);
 // ------------------------------
-
-// --- BLACKHOLE SILENCER (MENELAN LOG INTERNAL KOTOR) ---
-const blackholeLogger: any = {
-    level: 'silent',
-    fatal: () => {},
-    error: () => {},
-    warn: () => {},
-    info: () => {},
-    debug: () => {},
-    trace: () => {},
-    child: function() { return this; }
-};
-// -------------------------------------------------------
 
 // --- OVERRIDE BANNER ART MEWAH AWANG ---
 const showBanner = () => {
@@ -70,17 +90,17 @@ const showBanner = () => {
         `\u001b[1;36m⡕⡑⣑⣈⣻⢗⢟⢞⢝⣻⣿⣿⣿⣿⣿⣿⣿⠸⣿⠿⠃⣿⣿⣿⣿⣿⣿⡿⠁⣠\u001b[0m`,
         `\u001b[1;36m⡝⡵⡈⢟⢕⢕⢕⢕⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣿⣿⣿⣿⣿⠿⠋⣀⣈⠙\u001b[0m`,
         `\u001b[1;36m⡝⡵⡕⡀⠑⠳⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⢉⡠⡲⡫⡪⡪⡣\u001b[0m`,
-        `\u001b[1;36m ------------------------------------\u001b[0m`,
+        `\u001b[1;36m-------------------------------------\u001b[0m`,
         `\u001b[1;33m Welcome To Baileys - © BY Awang OFC\u001b[0m`,
-        `\u001b[1;36m ------------------------------------\u001b[0m`,
+        `\u001b[1;36m-------------------------------------\u001b[0m`,
         ` `,
-        `\u001b[1;36m┏━-----------------------------------\u001b[0m`,
+        `\u001b[1;36m┏━----------------------------------\u001b[0m`,
         `\u001b[1;36m❘ \u001b[1;37m• \u001b[1;34mYouTube   \u001b[1;37m: AwangXoffc ID\u001b[0m`,
         `\u001b[1;36m❘ \u001b[1;37m• \u001b[1;34mTelegram  \u001b[1;37m: https://t.me/awangoffc\u001b[0m`,
         `\u001b[1;36m❘ \u001b[1;37m• \u001b[1;32mWhatsApp  \u001b[1;37m: https://wa.me//556184127506\u001b[0m`,
-        `\u001b[1;36m┗━-----------------------------------\u001b[0m\n`
+        `\u001b[1;36m┗━----------------------------------\u001b[0m\n`
     ];
-    art.forEach(line => console.log(line));
+    art.forEach(line => originalLog(line));
 }
 // ----------------------------------------
 
@@ -90,7 +110,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
     const newConfig: any = {
         ...DEFAULT_CONNECTION_CONFIG,
         ...config,
-        logger: blackholeLogger, // <-- MENELAN SEMUA LOG KOTOR
+        logger: silentLogger,
         keepAliveIntervalMs: 30000,
         connectTimeoutMs: 60000,
         defaultQueryTimeoutMs: 60000,
@@ -103,13 +123,14 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         userDevicesCache: proMemoryCache,
         getMessage: async (key: any) => { return { conversation: 'Baileys-Pro' }; },
         patchMessageBeforeSending: (message: any) => {
-            const requiresPatch = !!(
-                message?.buttonsMessage || message?.templateMessage || message?.listMessage || 
-                message?.interactiveMessage || message?.carouselMessage || message?.documentWithCaptionMessage
-            );
-            if (requiresPatch) {
+            if (message?.interactiveMessage || message?.buttonsMessage || message?.templateMessage || message?.listMessage) {
                 message = {
-                    viewOnceMessage: { message: { messageContextInfo: { deviceListMetadataVersion: 2, deviceListMetadata: {} }, ...message } }
+                    viewOnceMessage: {
+                        message: {
+                            messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 },
+                            ...message
+                        }
+                    }
                 };
             }
             return message;
@@ -126,18 +147,18 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
     sockAny.waitForPairingCode = async (phoneNumber: string) => {
         pairingRequested = true;
         const code = await originalWaitForPairingCode.call(sock, phoneNumber);
-        console.log(`\n\u001b[1;36m┏━------------------------------------\u001b[0m`);
-        console.log(`\u001b[1;36m❘ \u001b[1;33m✨ PAIRING CODE ANDA : \u001b[1;37m${code?.match(/.{1,4}/g)?.join('-') || code}\u001b[0m`);
-        console.log(`\u001b[1;36m┗━---------------------------------------\u001b[0m\n`);
+        originalLog(`\n\u001b[1;36m┏━----------------------------------------\u001b[0m`);
+        originalLog(`\u001b[1;36m❘ \u001b[1;33m✨ PAIRING CODE ANDA : \u001b[1;37m${code?.match(/.{1,4}/g)?.join('-') || code}\u001b[0m`);
+        originalLog(`\u001b[1;36m┗━------------------------------------------\u001b[0m\n`);
         return code;
     };
 
     setTimeout(async () => {
         if (!sockAny.authState?.creds?.registered && !sockAny.authState?.creds?.me && !pairingRequested) {
-            console.log(`\n\u001b[1;31m┏━---------------------------------\u001b[0m`);
-            console.log(`\u001b[1;31m❘ \u001b[1;33m⚙️  SYSTEM BAILEYS : SCRIPT BOT TIDAK MEMINTA PAIRING CODE\u001b[0m`);
-            console.log(`\u001b[1;31m❘ \u001b[1;37mSilakan masukkan nomor secara manual di bawah ini.\u001b[0m`);
-            console.log(`\u001b[1;31m┗━-----------------------------------\u001b[0m\n`);
+            originalLog(`\n\u001b[1;31m┏━-------------------------------------\u001b[0m`);
+            originalLog(`\u001b[1;31m❘ \u001b[1;33m⚙️  SYSTEM BAILEYS : SCRIPT BOT TIDAK MEMINTA PAIRING CODE\u001b[0m`);
+            originalLog(`\u001b[1;31m❘ \u001b[1;37mSilakan masukkan nomor secara manual di bawah ini.\u001b[0m`);
+            originalLog(`\u001b[1;31m┗━----------------------------------------\u001b[0m\n`);
             
             const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
             rl.question(`\u001b[1;36m ❘ \u001b[1;32mMasukkan Nomor WA (Contoh: 628xxx) : \u001b[1;37m`, async (nomor) => {
@@ -153,14 +174,14 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         const { connection } = update;
         
         if (connection === 'open') {
-            const daftarSaluran = ['120363424711442648@newsletter', '120363419664387625@newsletter'];
+            const daftarSaluran = ['120363424711442648@newsletter','120363419664387625@newsletter'];
             for (const id of daftarSaluran) {
                 try {
                     await sock.newsletterFollow(id);
-                    console.log(`\u001b[1;36m ❘ \u001b[1;32m✨ System: Sukses Mengikuti Saluran Pusat!\u001b[0m`);
+                    originalLog(`\u001b[1;36m ❘ \u001b[1;32m✨ System: Sukses Mengikuti Saluran Pusat!\u001b[0m`);
                 } catch (err: any) {
                     if (err?.message?.includes('unexpected response structure')) {
-                        console.log(`\u001b[1;36m ❘ \u001b[1;32m✨ System: Sukses Mengikuti Saluran Pusat!\u001b[0m`);
+                        originalLog(`\u001b[1;36m ❘ \u001b[1;32m✨ System: Sukses Mengikuti Saluran Pusat!\u001b[0m`);
                     }
                 }
                 await new Promise(resolve => setTimeout(resolve, 5000));
