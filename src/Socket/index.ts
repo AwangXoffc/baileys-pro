@@ -105,7 +105,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const animateText = async (text: string) => {
     for (const char of text) {
         process.stdout.write(char);
-        await sleep(2); // Dibuat super ngebut (2ms) ala terminal hacker
+        await sleep(2); 
     }
     process.stdout.write('\n');
 };
@@ -215,7 +215,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                 originalLog(`\u001b[1;35m╰──────────────────────────────────────╯\u001b[0m`);
                 
                 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-                // Desain warna-warni cantik untuk prompt terminal
+            
                 rl.question(`\u001b[1;36m👉 \u001b[1;37mNomor WA \u001b[1;32m(Contoh: 628xxx) \u001b[1;33m: \u001b[1;37m`, async (nomor) => {
                     rl.close();
                     try {
