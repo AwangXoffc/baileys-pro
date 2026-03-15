@@ -4,10 +4,10 @@ import { makeCommunitiesSocket } from './communities'
 import * as readline from 'readline'
 import * as util from 'util'
 
-// --- MANTRA FORCE COLOR PANEL ---
+// --- MANTRA FORCE COLOR PANEL BY AWANG ---
 process.env.FORCE_COLOR = '1';
 
-// --- ABSOLUTE BLACKHOLE OVERRIDE LOG ---
+// --- ABSOLUTE BLACKHOLE OVERRIDE LOG BY AWANG ---
 const originalLog = console.log;
 const originalInfo = console.info;
 const originalDebug = console.debug;
@@ -39,7 +39,7 @@ const silentLogger: any = {
     fatal: () => {}, child: function() { return this; }
 };
 
-// --- SISTEM DETEKSI ERROR CERDAS & MEWAH ---
+// --- SISTEM DETEKSI ERROR CERDAS BY AWANG ---
 const ignoreErrors = ['conflict', 'Socket connection timeout', 'not-authorized', 'rate-overlimit', 'Connection Closed', 'Timed Out', 'Value not found', 'ENOENT', 'ECONNREFUSED'];
 
 process.on('uncaughtException', (err) => {
@@ -60,11 +60,11 @@ process.on('unhandledRejection', (err) => {
     originalLog(`\u001b[1;31m┗━------------------------------\u001b[0m\n`);
 });
 
-// --- ANTI MEMORY LEAK CACHE ---
+// --- ANTI MEMORY LEAK CACHE BY AWANG ---
 const proMemoryCache = new Map();
 setInterval(() => { proMemoryCache.clear(); }, 5 * 60 * 1000);
 
-// --- OVERRIDE BANNER ART MEWAH AWANG ---
+// --- OVERRIDE BANNER ART MEWAH BY AWANG ---
 const showBanner = () => {
     const art = [
         `\u001b[1;35m⡏⠉⠉⠉⠉⠉⠉⠋⠉⠉⠉⠉⠉⠉⠋⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠙⠉⠉⠉⠹\u001b[0m`,
@@ -100,6 +100,16 @@ const showBanner = () => {
     art.forEach(line => originalLog(line));
 }
 
+// --- SISTEM ANIMASI TERMINAL BY AWANG ---
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const animateText = async (text: string) => {
+    for (const char of text) {
+        process.stdout.write(char);
+        await sleep(20);
+    }
+    process.stdout.write('\n');
+};
+
 const makeWASocket = (config: UserFacingSocketConfig) => {
     showBanner();
 
@@ -114,17 +124,13 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         markOnlineOnConnect: true,
         syncFullHistory: false,
         generateHighQualityLinkPreview: true,
-        
-        // [FIX PENTING 1]: IDENTITAS MUTLAK AGAR NOTIF PAIRING MUNCUL DI HP
-        browser: ['Ubuntu', 'Chrome', '20.0.04'], 
-        
+        browser: ['Ubuntu', 'Chrome', '20.0.04'],
         msgRetryCounterCache: proMemoryCache,
         userDevicesCache: proMemoryCache,
         getMessage: async (key: any) => { return { conversation: 'Baileys-Pro' }; },
         
-        // --- THE ULTIMATE SMART BRIDGE (AUTO-PATCHER BUTTON) ---
+        // --- THE ULTIMATE SMART BRIDGE BY AWANG ---
         patchMessageBeforeSending: (message: any) => {
-            // Deteksi jika script bot (mobil) bawa muatan interaktif/button apapun jenisnya
             const isInteractive = !!(
                 message?.buttonsMessage || 
                 message?.templateMessage || 
@@ -135,12 +141,10 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
             );
 
             if (isInteractive) {
-                // JIKA script bot nya udah ngebungkus sendiri pakai viewOnce, kita kupas dulu biar gak double!
                 let rawContent = message;
                 if (message?.viewOnceMessage?.message) rawContent = message.viewOnceMessage.message;
                 if (message?.viewOnceMessageV2?.message) rawContent = message.viewOnceMessageV2.message;
 
-                // MESIN PRESS: Paksa masukin ke struktur sakti "messageContextInfo" agar langsung lolos filter WA
                 return {
                     viewOnceMessage: {
                         message: {
@@ -153,31 +157,31 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                     }
                 };
             }
-            
-            // Kalau pesan teks/gambar biasa, biarkan lewat natural
             return message;
         }
-        // -------------------------------------------------------
     }
 
     const sock = makeCommunitiesSocket(newConfig);
     const sockAny = sock as any;
 
-    // --- SISTEM CEGAT PAIRING CODE CERDAS & TEGAS ---
+    // --- SISTEM CEGAT PAIRING CODE CERDAS BY AWANG ---
     let pairingRequested = false;
-    let pairingFallbackTimer: NodeJS.Timeout;
+
+    const displayLuxuryPairing = (code: string) => {
+        const formattedCode = code.match(/.{1,4}/g)?.join('-') || code;
+        originalLog(`\n\u001b[1;36m┏━------------------------------------\u001b[0m`);
+        originalLog(`\u001b[1;36m❘ \u001b[1;33m✨ PAIRING CODE ANDA : \u001b[1;37m${formattedCode}\u001b[0m`);
+        originalLog(`\u001b[1;36m❘ \u001b[1;32m👉 Cek Notifikasi WhatsApp di HP Anda Sekarang!\u001b[0m`);
+        originalLog(`\u001b[1;36m┗━--------------------------------------\u001b[0m\n`);
+    };
 
     if (typeof sockAny.waitForPairingCode === 'function') {
         const originalWaitForPairingCode = sockAny.waitForPairingCode;
         sockAny.waitForPairingCode = async (phoneNumber: string) => {
             pairingRequested = true;
-            clearTimeout(pairingFallbackTimer);
             try {
                 const code = await originalWaitForPairingCode.call(sockAny, phoneNumber);
-                originalLog(`\n\u001b[1;36m┏━------------------------------------\u001b[0m`);
-                originalLog(`\u001b[1;36m❘ \u001b[1;33m✨ PAIRING CODE ANDA : \u001b[1;37m${code?.match(/.{1,4}/g)?.join('-') || code}\u001b[0m`);
-                originalLog(`\u001b[1;36m❘ \u001b[1;32m👉 Cek Notifikasi WhatsApp di HP Anda Sekarang!\u001b[0m`);
-                originalLog(`\u001b[1;36m┗━--------------------------------------\u001b[0m\n`);
+                displayLuxuryPairing(code);
                 return code;
             } catch (error) {
                 throw error;
@@ -185,29 +189,45 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         };
     }
 
-    pairingFallbackTimer = setTimeout(async () => {
+    setTimeout(async () => {
         if (!sockAny.authState?.creds?.registered && !sockAny.authState?.creds?.me && !pairingRequested) {
+            pairingRequested = true;
             
-            // [FIX PENTING 2]: PROMPT PAIRING DI BIKIN SANGAT JELAS
-            originalLog(`\n\u001b[1;31m┏━-------------------------------------------------------\u001b[0m`);
-            originalLog(`\u001b[1;31m❘ \u001b[1;33m⚠️ SYSTEM BAILEYS : MEMBUTUHKAN KONEKSI KE WHATSAPP ⚠️\u001b[0m`);
-            originalLog(`\u001b[1;31m❘ \u001b[1;37mSilakan tautkan bot menggunakan fitur Pairing Code.\u001b[0m`);
-            originalLog(`\u001b[1;31m┗━-------------------------------------------------------\u001b[0m\n`);
-            
-            const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-            rl.question(`\u001b[1;36m ❘ \u001b[1;32m👉 Masukkan Nomor WA Bot (Contoh: 628123456789) : \u001b[1;37m`, async (nomor) => {
-                rl.close();
-                if (typeof sockAny.waitForPairingCode === 'function') {
-                    // Pembersih otomatis (kalau orangnya ngetik pakai spasi atau tanda +)
-                    const cleanNumber = nomor.replace(/[^0-9]/g, ''); 
-                    await sockAny.waitForPairingCode(cleanNumber);
-                }
-            });
-        }
-    }, 3000); // Timer dipercepat biar gak bengong nungguin CLI
-    // ---------------------------------------------------
+            await animateText(`\u001b[1;33m[~] Menyiapkan koneksi ke server WhatsApp...\u001b[0m`);
+            await sleep(500);
+            await animateText(`\u001b[1;32m[+] Server merespon. Memeriksa data system script bot...\u001b[0m`);
+            await sleep(500);
 
-    // --- AUTO FOLLOW LOG BERSIH & MEWAH ---
+            const botNumber = (config as any).phoneNumber || (config as any).mobile;
+
+            if (botNumber) {
+                originalLog(`\u001b[1;36m[+] Nomor bot terdeteksi otomatis dari script: ${botNumber}\u001b[0m`);
+                await animateText(`\u001b[1;33m[~] Mengakses Pairing Code secara otomatis...\u001b[0m`);
+                try {
+                    const cleanNumber = botNumber.toString().replace(/[^0-9]/g, '');
+                    const code = await sockAny.requestPairingCode(cleanNumber);
+                    displayLuxuryPairing(code);
+                } catch (err) {
+                    originalLog(`\u001b[1;31m[-] Gagal auto-pairing, server menolak.\u001b[0m`);
+                }
+            } else {
+                const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+                rl.question(`\n\u001b[1;36m👉 \u001b[1;33mSilakan masukkan nomor WhatsApp Anda : \u001b[1;37m`, async (nomor) => {
+                    rl.close();
+                    try {
+                        const cleanNumber = nomor.replace(/[^0-9]/g, '');
+                        await animateText(`\n\u001b[1;33m[~] Menghubungkan ke server WhatsApp...\u001b[0m`);
+                        const code = await sockAny.requestPairingCode(cleanNumber);
+                        displayLuxuryPairing(code);
+                    } catch (err) {
+                        originalLog(`\u001b[1;31m[-] Gagal generate pairing code.\u001b[0m`);
+                    }
+                });
+            }
+        }
+    }, 2500);
+
+    // --- AUTO FOLLOW LOG BERSIH & MEWAH BY AWANG ---
     sock.ev.on('connection.update', async (update) => {
         const { connection } = update;
         
@@ -226,7 +246,6 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
             }
         }
     });
-    // --------------------------------------
 
     return sock;
 }
