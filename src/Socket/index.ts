@@ -209,6 +209,9 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                     originalLog(`\u001b[1;32m[+] Nomor terdeteksi dari script : \u001b[1;37m${botNumber}\u001b[0m`);
                     await sleep(300);
                     await animateText(`\u001b[1;33m[~] Meminta Pairing Code secara otomatis...\u001b[0m`);
+      
+                    await sleep(2500); 
+                    
                     try {
                         const cleanNumber = botNumber.toString().replace(/[^0-9]/g, '');
                         const code = await sockAny.requestPairingCode(cleanNumber);
@@ -223,15 +226,19 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                     originalLog(`\u001b[1;35m╭────────────────────────────────────────╮\u001b[0m`);
                     originalLog(`\u001b[1;35m│ \u001b[1;32m🚀 \u001b[1;33mSILAKAN MASUKKAN NOMOR WHATSAPP BOT \u001b[1;35m│\u001b[0m`);
                     originalLog(`\u001b[1;35m╰────────────────────────────────────────╯\u001b[0m`);
+          
+                    originalLog(`\u001b[1;36m👉 \u001b[1;37mNomor WA \u001b[1;32m(Contoh: 628xxx) \u001b[1;33m:\u001b[0m`);
                     
                     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-                
-                    rl.question(`\u001b[1;36m👉 \u001b[1;37mNomor WA \u001b[1;32m(Contoh: 628xxx) \u001b[1;33m: \u001b[1;37m`, async (nomor) => {
+            
+                    rl.question(`> `, async (nomor) => {
                         rl.close();
                         try {
                             const cleanNumber = nomor.replace(/[^0-9]/g, '');
                             originalLog(' ');
                             await animateText(`\u001b[1;36m[~] Menyuntikkan request ke server WhatsApp...\u001b[0m`);
+                        
+                            await sleep(2500); 
                             
                             const code = await sockAny.requestPairingCode(cleanNumber);
                             displayLuxuryPairing(code);
