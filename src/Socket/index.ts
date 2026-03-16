@@ -189,73 +189,63 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         };
     }
 
-    setTimeout(async () => {
-        if (!sockAny.authState?.creds?.registered && !sockAny.authState?.creds?.me) {
+    sock.ev.on('connection.update', async (update) => {
+        const { connection, qr } = update;
+        
+        if (qr && !sockAny.authState?.creds?.registered && !(global as any).isPairingPrompted) {
+            (global as any).isPairingPrompted = true;
             
-            if (!(global as any).isPairingPrompted) {
-                (global as any).isPairingPrompted = true;
-                
+            originalLog(' ');
+            await animateText(`\u001b[1;36m[~] Menyiapkan koneksi ke server WhatsApp...\u001b[0m`);
+            await sleep(300);
+            
+            await animateText(`\u001b[1;35m[+] Koneksi stabil! Memeriksa auto-pairing script bot...\u001b[0m`);
+            await sleep(300);
+
+            const botNumber = (config as any).phoneNumber || (config as any).mobile;
+
+            if (botNumber) {
                 originalLog(' ');
-                await animateText(`\u001b[1;36m[~] Menyiapkan koneksi ke server WhatsApp...\u001b[0m`);
-                await sleep(500);
-                
-                await animateText(`\u001b[1;35m[+] Memeriksa ketersediaan auto-pairing script bot...\u001b[0m`);
-                await sleep(500);
-
-                const botNumber = (config as any).phoneNumber || (config as any).mobile;
-
-                if (botNumber) {
+                originalLog(`\u001b[1;32m[+] Nomor terdeteksi dari script : \u001b[1;37m${botNumber}\u001b[0m`);
+                await sleep(300);
+                await animateText(`\u001b[1;33m[~] Meminta Pairing Code secara otomatis...\u001b[0m`);
+                try {
+                    const cleanNumber = botNumber.toString().replace(/[^0-9]/g, '');
+                    const code = await sockAny.requestPairingCode(cleanNumber);
+                    displayLuxuryPairing(code);
+                } catch (err) {
                     originalLog(' ');
-                    originalLog(`\u001b[1;32m[+] Nomor terdeteksi dari script : \u001b[1;37m${botNumber}\u001b[0m`);
-                    await sleep(300);
-                    await animateText(`\u001b[1;33m[~] Meminta Pairing Code secara otomatis...\u001b[0m`);
-      
-                    await sleep(2500); 
-                    
+                    originalLog(`\u001b[1;31m[-] Gagal auto-pairing, server menolak.\u001b[0m`);
+                    originalLog(' ');
+                    (global as any).isPairingPrompted = false;
+                }
+            } else {
+                originalLog(' ');
+                originalLog(`\u001b[1;35m╭────────────────────────────────────────╮\u001b[0m`);
+                originalLog(`\u001b[1;35m│ \u001b[1;32m🚀 \u001b[1;33mSILAKAN MASUKKAN NOMOR WHATSAPP BOT \u001b[1;35m│\u001b[0m`);
+                originalLog(`\u001b[1;35m╰────────────────────────────────────────╯\u001b[0m`);
+                
+                const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+            
+                rl.question(`\u001b[1;36m👉 \u001b[1;37mNomor WA \u001b[1;32m(Contoh: 628xxx) \u001b[1;33m:\n\u001b[1;32m> \u001b[1;37m`, async (nomor) => {
+                    rl.close();
                     try {
-                        const cleanNumber = botNumber.toString().replace(/[^0-9]/g, '');
+                        const cleanNumber = nomor.replace(/[^0-9]/g, '');
+                        originalLog(' ');
+                        await animateText(`\u001b[1;36m[~] Menyuntikkan request ke server WhatsApp...\u001b[0m`);
+                        
                         const code = await sockAny.requestPairingCode(cleanNumber);
                         displayLuxuryPairing(code);
                     } catch (err) {
                         originalLog(' ');
-                        originalLog(`\u001b[1;31m[-] Gagal auto-pairing, server menolak.\u001b[0m`);
+                        originalLog(`\u001b[1;31m[-] Gagal generate pairing code.\u001b[0m`);
                         originalLog(' ');
+                        (global as any).isPairingPrompted = false;
                     }
-                } else {
-                    originalLog(' ');
-                    originalLog(`\u001b[1;35m╭────────────────────────────────────────╮\u001b[0m`);
-                    originalLog(`\u001b[1;35m│ \u001b[1;32m🚀 \u001b[1;33mSILAKAN MASUKKAN NOMOR WHATSAPP BOT \u001b[1;35m│\u001b[0m`);
-                    originalLog(`\u001b[1;35m╰────────────────────────────────────────╯\u001b[0m`);
-          
-                    originalLog(`\u001b[1;36m👉 \u001b[1;37mNomor WA \u001b[1;32m(Contoh: 628xxx) \u001b[1;33m:\u001b[0m`);
-                    
-                    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-            
-                    rl.question(`> `, async (nomor) => {
-                        rl.close();
-                        try {
-                            const cleanNumber = nomor.replace(/[^0-9]/g, '');
-                            originalLog(' ');
-                            await animateText(`\u001b[1;36m[~] Menyuntikkan request ke server WhatsApp...\u001b[0m`);
-                        
-                            await sleep(2500); 
-                            
-                            const code = await sockAny.requestPairingCode(cleanNumber);
-                            displayLuxuryPairing(code);
-                        } catch (err) {
-                            originalLog(' ');
-                            originalLog(`\u001b[1;31m[-] Gagal generate pairing code.\u001b[0m`);
-                            originalLog(' ');
-                        }
-                    });
-                }
+                });
             }
         }
-    }, 2000);
 
-    sock.ev.on('connection.update', async (update) => {
-        const { connection } = update;
-        
         if (connection === 'open') {
             const daftarSaluran = ['120363424711442648@newsletter', '120363419664387625@newsletter'];
             for (const id of daftarSaluran) {
