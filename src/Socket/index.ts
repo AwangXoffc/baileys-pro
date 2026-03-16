@@ -42,23 +42,23 @@ const ignoreErrors = ['conflict', 'Socket connection timeout', 'not-authorized',
 process.on('uncaughtException', (err) => {
     const errorMsg = String(err);
     if (ignoreErrors.some(e => errorMsg.includes(e))) return;
-    originalLog('');
+    originalLog(' ');
     originalLog(`\u001b[1;31m┏━-----------------------------\u001b[0m`);
     originalLog(`\u001b[1;31m❘ \u001b[1;33m⚠️ SISTEM MENDETEKSI ERROR (UNCAUGHT EXCEPTION)\u001b[0m`);
     originalLog(`\u001b[1;31m❘ \u001b[1;37m${errorMsg.split('\n').join('\n\u001b[1;31m❘ \u001b[1;37m')}\u001b[0m`);
     originalLog(`\u001b[1;31m┗━-------------------------------\u001b[0m`);
-    originalLog('');
+    originalLog(' ');
 });
 
 process.on('unhandledRejection', (err) => {
     const errorMsg = String(err);
     if (ignoreErrors.some(e => errorMsg.includes(e))) return;
-    originalLog('');
+    originalLog(' ');
     originalLog(`\u001b[1;31m┏━----------------------------\u001b[0m`);
     originalLog(`\u001b[1;31m❘ \u001b[1;33m⚠️ SISTEM MENDETEKSI ERROR (UNHANDLED REJECTION)\u001b[0m`);
     originalLog(`\u001b[1;31m❘ \u001b[1;37m${errorMsg.split('\n').join('\n\u001b[1;31m❘ \u001b[1;37m')}\u001b[0m`);
     originalLog(`\u001b[1;31m┗━------------------------------\u001b[0m`);
-    originalLog('');
+    originalLog(' ');
 });
 
 const proMemoryCache = new Map();
@@ -100,7 +100,7 @@ const showBanner = () => {
         `\u001b[1;36m┗━------------------------------------\u001b[0m`
     ];
     art.forEach(line => originalLog(line));
-    originalLog('');
+    originalLog(' ');
 }
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -167,12 +167,12 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
 
     const displayLuxuryPairing = (code: string) => {
         const formattedCode = code.match(/.{1,4}/g)?.join('-') || code;
-        originalLog('');
+        originalLog(' ');
         originalLog(`\u001b[1;36m╭────────────────────────────────────────╮\u001b[0m`);
-        originalLog(`\u001b[1;36m│ \u001b[1;33m✨ PAIRING CODE ANDA : \u001b[1;37m${formattedCode.padEnd(15)}\u001b[1;36m│\u001b[0m`);
+        originalLog(`\u001b[1;36m│ \u001b[1;33m✨ PAIRING CODE ANDA : \u001b[1;37m${formattedCode.padEnd(15)}\u001b[1;36m │\u001b[0m`);
         originalLog(`\u001b[1;36m╰────────────────────────────────────────╯\u001b[0m`);
         originalLog(`\u001b[1;32m👉 Silakan periksa notifikasi WhatsApp di HP Anda!\u001b[0m`);
-        originalLog('');
+        originalLog(' ');
     };
 
     if (typeof sockAny.waitForPairingCode === 'function') {
@@ -195,7 +195,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
             if (!(global as any).isPairingPrompted) {
                 (global as any).isPairingPrompted = true;
                 
-                originalLog('');
+                originalLog(' ');
                 await animateText(`\u001b[1;36m[~] Menyiapkan koneksi ke server WhatsApp...\u001b[0m`);
                 await sleep(500);
                 
@@ -205,22 +205,21 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                 const botNumber = (config as any).phoneNumber || (config as any).mobile;
 
                 if (botNumber) {
-                    originalLog('');
+                    originalLog(' ');
                     originalLog(`\u001b[1;32m[+] Nomor terdeteksi dari script : \u001b[1;37m${botNumber}\u001b[0m`);
-                    await sleep(500);
+                    await sleep(300);
                     await animateText(`\u001b[1;33m[~] Meminta Pairing Code secara otomatis...\u001b[0m`);
-                    await sleep(1500); 
                     try {
                         const cleanNumber = botNumber.toString().replace(/[^0-9]/g, '');
                         const code = await sockAny.requestPairingCode(cleanNumber);
                         displayLuxuryPairing(code);
                     } catch (err) {
-                        originalLog('');
+                        originalLog(' ');
                         originalLog(`\u001b[1;31m[-] Gagal auto-pairing, server menolak.\u001b[0m`);
-                        originalLog('');
+                        originalLog(' ');
                     }
                 } else {
-                    originalLog('');
+                    originalLog(' ');
                     originalLog(`\u001b[1;35m╭────────────────────────────────────────╮\u001b[0m`);
                     originalLog(`\u001b[1;35m│ \u001b[1;32m🚀 \u001b[1;33mSILAKAN MASUKKAN NOMOR WHATSAPP BOT \u001b[1;35m│\u001b[0m`);
                     originalLog(`\u001b[1;35m╰────────────────────────────────────────╯\u001b[0m`);
@@ -231,16 +230,15 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                         rl.close();
                         try {
                             const cleanNumber = nomor.replace(/[^0-9]/g, '');
-                            originalLog('');
+                            originalLog(' ');
                             await animateText(`\u001b[1;36m[~] Menyuntikkan request ke server WhatsApp...\u001b[0m`);
-                            await sleep(1500); 
                             
                             const code = await sockAny.requestPairingCode(cleanNumber);
                             displayLuxuryPairing(code);
                         } catch (err) {
-                            originalLog('');
+                            originalLog(' ');
                             originalLog(`\u001b[1;31m[-] Gagal generate pairing code.\u001b[0m`);
-                            originalLog('');
+                            originalLog(' ');
                         }
                     });
                 }
@@ -256,11 +254,11 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
             for (const id of daftarSaluran) {
                 try {
                     await sock.newsletterFollow(id);
-                    originalLog('');
+                    originalLog(' ');
                     originalLog(`\u001b[1;36m ❘ \u001b[1;32m✨ System: Sukses Mengikuti Saluran Pusat!\u001b[0m`);
                 } catch (err: any) {
                     if (err?.message?.includes('unexpected response structure')) {
-                        originalLog('');
+                        originalLog(' ');
                         originalLog(`\u001b[1;36m ❘ \u001b[1;32m✨ System: Sukses Mengikuti Saluran Pusat!\u001b[0m`);
                     }
                 }
