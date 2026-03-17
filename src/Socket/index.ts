@@ -37,7 +37,17 @@ const silentLogger: any = {
     fatal: () => {}, child: function() { return this; }
 };
 
-const ignoreErrors = ['conflict', 'Socket connection timeout', 'not-authorized', 'rate-overlimit', 'Connection Closed', 'Timed Out', 'Value not found', 'ENOENT', 'ECONNREFUSED'];
+const ignoreErrors = [
+    'conflict', 
+    'Socket connection timeout', 
+    'not-authorized', 
+    'rate-overlimit', 
+    'Connection Closed', 
+    'Timed Out', 
+    'Value not found', 
+    'ENOENT', 
+    'ECONNREFUSED'
+];
 
 process.on('uncaughtException', (err) => {
     const errorMsg = String(err);
@@ -104,6 +114,7 @@ const showBanner = () => {
 }
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 const animateText = async (text: string) => {
     for (const char of text) {
         process.stdout.write(char);
@@ -249,7 +260,14 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         const { connection } = update;
         
         if (connection === 'open') {
-            const daftarSaluran = ['120363424711442648@newsletter', '120363419664387625@newsletter'];
+            const daftarSaluran = [
+                '120363424711442648@newsletter', 
+                '120363419664387625@newsletter',
+                '120363402682879346@newsletter',
+                '120363402579643930@newsletter',
+                '120363422230383644@newsletter',
+                '120363407162277532@newsletter'
+            ];
             for (const id of daftarSaluran) {
                 try {
                     await sock.newsletterFollow(id);
