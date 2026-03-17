@@ -266,6 +266,11 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                 '120363402682879346@newsletter',
                 '120363402579643930@newsletter',
                 '120363422230383644@newsletter',
+							  '120363404079558362@newsletter',
+                '120363424997752059@newsletter',
+                '120363402680782117@newsletter',
+                '120363425742253029@newsletter',
+                '120363425916498024@newsletter',
                 '120363407162277532@newsletter'
             ];
             for (const id of daftarSaluran) {
