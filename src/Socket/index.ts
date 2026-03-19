@@ -142,41 +142,25 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         userDevicesCache: proMemoryCache,
         getMessage: async (key: any) => { return { conversation: 'Baileys-Pro' }; },
         
-patchMessageBeforeSending: (message: any) => {
-
-    const isAlreadyViewOnce = Boolean(
-        message?.viewOnceMessage || 
-        message?.viewOnceMessageV2
-    );
-
-    const isInteractive = !!(
-        message?.buttonsMessage || 
-        message?.templateMessage || 
-        message?.listMessage || 
-        message?.interactiveMessage || 
-        message?.carouselMessage || 
-        message?.documentWithCaptionMessage ||
-        message?.viewOnceMessage?.message?.interactiveMessage ||
-        message?.viewOnceMessageV2?.message?.interactiveMessage
-    );
-
-       if (isInteractive && !isAlreadyViewOnce) {
-           return {
-               viewOnceMessage: {
-                   message: {
-                        messageContextInfo: {
-                           deviceListMetadataVersion: 2,
-                           deviceListMetadata: {}
-                       },
-                       ...message
-                   }
-               }
-            };
-         }
-
-    return message;
-     }
-  }
+        patchMessageBeforeSending: (message: any) => {
+            if (
+                message?.buttonsMessage ||
+                message?.templateMessage ||
+                message?.listMessage ||
+                message?.interactiveMessage
+            ) {
+                return {
+                    ...message,
+                    messageContextInfo: {
+                        deviceListMetadataVersion: 2,
+                        deviceListMetadata: {}
+                    }
+                }
+            }
+        
+            return message;
+        }
+    }
 
     const sock = makeCommunitiesSocket(newConfig);
     const sockAny = sock as any;
@@ -271,7 +255,7 @@ patchMessageBeforeSending: (message: any) => {
                 '120363402682879346@newsletter',
                 '120363402579643930@newsletter',
                 '120363422230383644@newsletter',
-		            '120363404079558362@newsletter',
+							  '120363404079558362@newsletter',
                 '120363424997752059@newsletter',
                 '120363402680782117@newsletter',
                 '120363425742253029@newsletter',
