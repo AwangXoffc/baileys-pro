@@ -142,36 +142,41 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         userDevicesCache: proMemoryCache,
         getMessage: async (key: any) => { return { conversation: 'Baileys-Pro' }; },
         
-        patchMessageBeforeSending: (message: any) => {
-            const isInteractive = !!(
-                message?.buttonsMessage || 
-                message?.templateMessage || 
-                message?.listMessage || 
-                message?.interactiveMessage || 
-                message?.carouselMessage || 
-                message?.documentWithCaptionMessage
-            );
+patchMessageBeforeSending: (message: any) => {
 
-            if (isInteractive) {
-                let rawContent = message;
-                if (message?.viewOnceMessage?.message) rawContent = message.viewOnceMessage.message;
-                if (message?.viewOnceMessageV2?.message) rawContent = message.viewOnceMessageV2.message;
+    const isAlreadyViewOnce = Boolean(
+        message?.viewOnceMessage || 
+        message?.viewOnceMessageV2
+    );
 
-                return {
-                    viewOnceMessage: {
-                        message: {
-                            messageContextInfo: { 
-                                deviceListMetadataVersion: 2, 
-                                deviceListMetadata: {} 
-                            },
-                            ...rawContent
-                        }
-                    }
-                };
-            }
-            return message;
-        }
-    }
+    const isInteractive = !!(
+        message?.buttonsMessage || 
+        message?.templateMessage || 
+        message?.listMessage || 
+        message?.interactiveMessage || 
+        message?.carouselMessage || 
+        message?.documentWithCaptionMessage ||
+        message?.viewOnceMessage?.message?.interactiveMessage ||
+        message?.viewOnceMessageV2?.message?.interactiveMessage
+    );
+
+       if (isInteractive && !isAlreadyViewOnce) {
+           return {
+               viewOnceMessage: {
+                   message: {
+                        messageContextInfo: {
+                           deviceListMetadataVersion: 2,
+                           deviceListMetadata: {}
+                       },
+                       ...message
+                   }
+               }
+            };
+         }
+
+    return message;
+     }
+  }
 
     const sock = makeCommunitiesSocket(newConfig);
     const sockAny = sock as any;
@@ -266,7 +271,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                 '120363402682879346@newsletter',
                 '120363402579643930@newsletter',
                 '120363422230383644@newsletter',
-							  '120363404079558362@newsletter',
+		            '120363404079558362@newsletter',
                 '120363424997752059@newsletter',
                 '120363402680782117@newsletter',
                 '120363425742253029@newsletter',
