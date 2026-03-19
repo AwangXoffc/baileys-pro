@@ -140,7 +140,8 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         browser: ['Ubuntu', 'Chrome', '20.0.04'],
         msgRetryCounterCache: proMemoryCache,
         userDevicesCache: proMemoryCache,
-        getMessage: async (key: any) => { return { conversation: 'Baileys-Pro' }; },
+        
+        getMessage: async () => ({ conversation: 'fix' }),
         
         patchMessageBeforeSending: (message: any) => {
             if (
@@ -158,7 +159,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                 }
             }
         
-            return message;
+            return message
         }
     }
 
