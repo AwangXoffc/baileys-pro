@@ -71,9 +71,6 @@ process.on('unhandledRejection', (err) => {
     originalLog(' ');
 });
 
-const proMemoryCache = new Map();
-setInterval(() => { proMemoryCache.clear(); }, 5 * 60 * 1000);
-
 const showBanner = () => {
     if ((global as any).hasShownBanner) return;
     (global as any).hasShownBanner = true;
@@ -125,7 +122,7 @@ const animateText = async (text: string) => {
 
 const makeWASocket = (config: UserFacingSocketConfig) => {
     showBanner();
-
+	
     const newConfig: any = {
         ...DEFAULT_CONNECTION_CONFIG,
         ...config,
@@ -135,32 +132,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         defaultQueryTimeoutMs: 60000,
         retryRequestDelayMs: 5000,
         markOnlineOnConnect: true,
-        syncFullHistory: false,
-        generateHighQualityLinkPreview: true,
-        browser: ['Ubuntu', 'Chrome', '20.0.04'],
-        msgRetryCounterCache: proMemoryCache,
-        userDevicesCache: proMemoryCache,
-        
-        getMessage: async () => ({ conversation: 'fix' }),
-        
-        patchMessageBeforeSending: (message: any) => {
-            if (
-                message?.buttonsMessage ||
-                message?.templateMessage ||
-                message?.listMessage ||
-                message?.interactiveMessage
-            ) {
-                return {
-                    ...message,
-                    messageContextInfo: {
-                        deviceListMetadataVersion: 2,
-                        deviceListMetadata: {}
-                    }
-                }
-            }
-        
-            return message
-        }
+        browser: ['Ubuntu', 'Chrome', '20.0.04']
     }
 
     const sock = makeCommunitiesSocket(newConfig);
