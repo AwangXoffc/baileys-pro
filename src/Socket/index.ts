@@ -1,4 +1,4 @@
-niimport { DEFAULT_CONNECTION_CONFIG } from '../Defaults'
+import { DEFAULT_CONNECTION_CONFIG } from '../Defaults'
 import type { UserFacingSocketConfig } from '../Types'
 import { makeCommunitiesSocket } from './communities'
 import * as readline from 'readline'
