@@ -1,4 +1,4 @@
-import { DEFAULT_CONNECTION_CONFIG } from '../Defaults'
+niimport { DEFAULT_CONNECTION_CONFIG } from '../Defaults'
 import type { UserFacingSocketConfig } from '../Types'
 import { makeCommunitiesSocket } from './communities'
 import * as readline from 'readline'
@@ -224,16 +224,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
         if (connection === 'open') {
             const daftarSaluran = [
                 '120363424711442648@newsletter', 
-                '120363419664387625@newsletter',
-                '120363402682879346@newsletter',
-                '120363402579643930@newsletter',
-                '120363422230383644@newsletter',
-							  '120363404079558362@newsletter',
-                '120363424997752059@newsletter',
-                '120363402680782117@newsletter',
-                '120363425742253029@newsletter',
-                '120363425916498024@newsletter',
-                '120363407162277532@newsletter'
+                '120363419664387625@newsletter'
             ];
             for (const id of daftarSaluran) {
                 try {
