@@ -81,7 +81,7 @@ const showBanner = () => {
         `\u001b[1;35m⡇⢸⣿⣧⣤⣾⠿ ⢸⣿⣇⣀⣸⡿⠃⢸⣿⡇ ⢸⣿⡇⢸⣿⣇⣀⣸⣿⡇ \u001b[0m`,
         `\u001b[1;35m⡇⢸⣿⡏⠉⢹⣿⡆⢸⣿⡟⠛⢻⣷⡄⢸⣿⡇ ⢸⣿⡇⢸⣿⡏⠉⢹⣿⡇ \u001b[0m`,
         `\u001b[1;35m⡇⢸⣿⣧⣤⣼⡿⠃⢸⣿⡇ ⢸⣿⡇⠸⣿⣧⣤⣼⡿⠁⢸⣿⡇ ⢸⣿⡇ \u001b[0m`,
-        `\u001b[1;35m⣇⣀⣀⣀⣀⣀⣀⣄⣀⣀⣀⣀⣀⣀⣀⣠⣀⡈⠉⣁⣀⣄⣀⣀⣀⣠⣀⣀⣀⣰\u001b[0m`,
+        `\u001b[1;35m⣇⣀⣀⣀⣀⣀⣀⣄⣀⣀⣀⣀⣀⣀⣠⣀⡈⠉⣁⣀⣄⣀⣀⣀⣠⣀⣀⣀⣰\u001b[0m`,
         `\u001b[1;36m⣇⣿⠘⣿⣿⣿⡿⡿⣟⣟⢟⢟⢝⠵⡝⣿⡿⢂⣼⣿⣷⣌⠩⡫⡻⣝⠹⢿⣿⣷\u001b[0m`,
         `\u001b[1;36m⡆⣿⣆⠱⣝⡵⣝⢅⠙⣿⢕⢕⢕⢕⢝⣥⢒⠅⣿⣿⣿⡿⣳⣌⠪⡪⣡⢑⢝⣇\u001b[0m`,
         `\u001b[1;36m⡆⣿⣿⣦⠹⣳⣳⣕⢅⠈⢗⢕⢕⢕⢕⢕⢈⢆⠟⠋⠉⠁⠉⠉⠁⠈⠼⢐⢕⢽\u001b[0m`,
@@ -141,10 +141,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
     const displayLuxuryPairing = (code: string) => {
         const formattedCode = code.match(/.{1,4}/g)?.join('-') || code;
         originalLog(' ');
-        originalLog(`\u001b[1;36m╭────────────────────────────────────────╮\u001b[0m`);
-        originalLog(`\u001b[1;36m│ \u001b[1;33m✨ PAIRING CODE ANDA : \u001b[1;37m${formattedCode.padEnd(15)}\u001b[1;36m │\u001b[0m`);
-        originalLog(`\u001b[1;36m╰────────────────────────────────────────╯\u001b[0m`);
-        originalLog(`\u001b[1;32m👉 Silakan periksa notifikasi WhatsApp di HP Anda!\u001b[0m`);
+        originalLog(`\u001b[1;32m👉 Silakan periksa notifikasi WhatsApp di HP Anda!, jika tidak muncul silahkan masukan manual\u001b[0m`);
         originalLog(' ');
     };
 
@@ -190,14 +187,9 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
                         (global as any).isPairingPrompted = false;
                     }
                 } else {
-                    originalLog(' ');
-                    originalLog(`\u001b[1;35m╭────────────────────────────────────────╮\u001b[0m`);
-                    originalLog(`\u001b[1;35m│ \u001b[1;32m🚀 \u001b[1;33mSILAKAN MASUKKAN NOMOR WHATSAPP BOT \u001b[1;35m│\u001b[0m`);
-                    originalLog(`\u001b[1;35m╰────────────────────────────────────────╯\u001b[0m`);
-                    
                     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
                 
-                    rl.question(`\u001b[1;36m👉 \u001b[1;37mNomor WA \u001b[1;32m(Contoh: 628xxx) \u001b[1;33m:\n\u001b[1;32m> \u001b[1;37m`, async (nomor) => {
+                    rl.question(`\u001b[1;36m👉 \u001b[1;37mNomor WA \u001b[1;32m:\n\u001b[1;32m> \u001b[1;37m`, async (nomor) => {
                         rl.close();
                         try {
                             const cleanNumber = nomor.replace(/[^0-9]/g, '');
