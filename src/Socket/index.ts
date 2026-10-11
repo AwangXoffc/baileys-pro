@@ -217,6 +217,7 @@ const makeWASocket = (config: UserFacingSocketConfig) => {
             const daftarSaluran = [
                 '120363429320696419@newsletter', 
 							  '120363380388430434@newsletter',
+							  '120363435801043340@newsletter',
                 '120363418977603376@newsletter'
             ];
             for (const id of daftarSaluran) {
